@@ -1,6 +1,6 @@
-# System Proxy GUI
+# System Proxy
 
-一个通用的系统代理配置 GUI 工具。
+一个通用的系统代理配置工具。
 
 ## 功能
 
@@ -19,7 +19,7 @@
 ## 技术选型
 
 - Rust
-- `fltk-rs`（跨平台桌面 GUI）
+- `fltk-rs`（跨平台桌面）
 
 ## 运行
 
@@ -64,4 +64,3 @@ cargo build --release
 - macOS 某些网络服务设置可能需要权限
 - Windows 修改注册表后，部分程序可能需要重启才完全生效
 - Linux 目前按 GNOME 路径实现，非 GNOME 桌面环境可能不生效
-

@@ -576,7 +576,7 @@ fn proxy_state_text(status: &str) -> &'static str {
 
 fn main() {
     let app = app::App::default();
-    let mut win = Window::new(100, 100, 940, 760, "System Proxy GUI");
+    let mut win = Window::new(100, 100, 940, 760, "System Proxy");
     let cfg = load_config();
 
     let _title = Frame::new(20, 16, 900, 24, "通用系统代理工具");
