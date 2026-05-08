@@ -409,6 +409,26 @@ fn platform_disable_proxy() -> Result<String, String> {
             "/f",
         ],
     );
+    let _ = run_cmd(
+        "reg",
+        &[
+            "delete",
+            r"HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings",
+            "/v",
+            "ProxyServer",
+            "/f",
+        ],
+    );
+    let _ = run_cmd(
+        "reg",
+        &[
+            "delete",
+            r"HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings",
+            "/v",
+            "ProxyOverride",
+            "/f",
+        ],
+    );
     Ok("Windows 代理已关闭（WinINet）".to_string())
 }
 
@@ -540,13 +560,30 @@ fn detect_proxy_enabled(status: &str) -> Option<bool> {
     }
     #[cfg(target_os = "windows")]
     {
-        if status.contains("ProxyEnable") && status.contains("0x1") {
+        let mut proxy_enable: Option<bool> = None;
+        let mut has_autoconfig_url = false;
+        for line in status.lines() {
+            let l = line.trim();
+            if l.starts_with("ProxyEnable") {
+                if l.contains("0x1") {
+                    proxy_enable = Some(true);
+                } else if l.contains("0x0") {
+                    proxy_enable = Some(false);
+                }
+            } else if l.starts_with("AutoConfigURL") {
+                let has_value = !l.contains("(value not set)") && l.split_whitespace().count() >= 3;
+                if has_value {
+                    has_autoconfig_url = true;
+                }
+            }
+        }
+        if proxy_enable == Some(true) {
             return Some(true);
         }
-        if status.contains("AutoConfigURL") {
+        if has_autoconfig_url {
             return Some(true);
         }
-        if status.contains("ProxyEnable") && status.contains("0x0") {
+        if proxy_enable == Some(false) {
             return Some(false);
         }
         return None;
