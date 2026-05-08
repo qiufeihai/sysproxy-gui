@@ -642,7 +642,10 @@ fn main() {
     win.end();
     win.make_resizable(true);
     win.show();
-    win.set_callback(|_| app::quit());
+    win.set_callback(|_| {
+        let _ = platform_disable_proxy();
+        app::quit();
+    });
 
     let state = Rc::new(RefCell::new(AppState::default()));
 
